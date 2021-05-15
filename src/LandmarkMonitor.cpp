@@ -1,5 +1,4 @@
 #include "ros/ros.h"
-#include "location_monitor/Landmark.h"
 #include "LandmarkMonitor.h"
 
 LandmarkPositions::LandmarkPositions(std::string name, double x, double y): m_name(name), m_x(x), m_y(y)
@@ -41,10 +40,17 @@ location_monitor::Landmark LandmarkMonitor::findNearestLandmard(const nav_msgs::
             landmark.landMark = element.m_name;
         }
     }
-    
+    m_nearestLandmark = landmark.landMark;
     if(landmark.distance <= 0.3)
     {
         ROS_INFO("Nearest Location is %s and distance is %f",landmark.landMark.c_str(), landmark.distance);
     }
     return landmark;
 }
+
+ bool LandmarkMonitor::nearestObjectService(location_monitor::nearestObjectSrvMessage::Request &req, location_monitor::nearestObjectSrvMessage::Response &res)
+ {
+    res.objectName = m_nearestLandmark;
+    ROS_INFO("Service sending nearest obect = %s", m_nearestLandmark.c_str());
+    return true;
+ }

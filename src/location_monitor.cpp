@@ -43,12 +43,8 @@ int main(int argc, char** argv)
    */
   ros::Publisher nearestLocPub = nodeHandle.advertise<location_monitor::Landmark>("nearestLocation",10);
     auto myLandmarkMonitor = std::make_shared<LandmarkMonitor>(nearestLocPub); 
-    //LandmarkMonitor myLandmarkMonitor; 
-    //ros::Subscriber sub = nodeHandle.subscribe("odom", 10, odomCallBack);
-    //ros::Subscriber sub = nodeHandle.subscribe("odom", 10, &myLandmarkMonitor->odomCallBack);
-    //ros::Subscriber sub = nodeHandle.subscribe("odom", 10, &LandmarkMonitor::odomCallBack, &myLandmarkMonitor);
     ros::Subscriber sub = nodeHandle.subscribe("odom", 10, &LandmarkMonitor::odomCallBack, myLandmarkMonitor.get());
-    //ros::Subscriber sub = nodeHandle.subscribe("odom", 10, std::bind(&LandmarkMonitor::odomCallBack, &myLandmarkMonitor,-1));
+    ros::ServiceServer service = nodeHandle.advertiseService("getNearestObject", &LandmarkMonitor::nearestObjectService, myLandmarkMonitor.get());
 
     ros::spin();
     return 0;
